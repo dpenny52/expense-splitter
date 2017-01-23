@@ -1,15 +1,14 @@
 // server/index.js
 'use strict';
-
+var mongo = require('mongodb');
 const app = require('./app');
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb').MongoClient;
 const PORT = process.env.PORT || 9000;
 
 var db;
 
 app.post('/expenses', (req, res) => {
 
-    req.body['_id'] = getNextSequence("userid")
     db.collection('expense').save(req.body, (err, result) => {
       if(err) return console.log(err);
 
@@ -24,7 +23,13 @@ app.get('/expenses', (req, res) => {
 });
 
 app.get('/expenses/:expenseId', (req, res) => {
+  var id = new mongo.ObjectId(req.params.expenseId);
+  db.collection('expense').find({'_id': id}).toArray((err, results) => {
+    if(err) return console.log(err);
 
+    console.log(results);
+    res.send(results);
+  });
 });
 
 // Always return the main index.html, so react-router render the route in the client
