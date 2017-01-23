@@ -4,6 +4,7 @@ var mongo = require('mongodb');
 const app = require('./app');
 const MongoClient = require('mongodb').MongoClient;
 const PORT = process.env.PORT || 9000;
+const path = require('path');
 
 var db;
 
