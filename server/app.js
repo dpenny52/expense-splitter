@@ -5,12 +5,15 @@ const morgan = require('morgan');
 const path = require('path');
 
 const app = express();
+var cors = require('cors')
 
 // Setup logger
 app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms'));
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+app.use(cors());
 
 // Serve static assets
 app.use(express.static(path.resolve(__dirname, '..', 'build')));

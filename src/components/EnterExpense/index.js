@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, Image, View } from 'react-native-web';
+import { StyleSheet, Image, View } from 'react-native-web';
 import CustomButton from '../CustomButton';
 import SuperTextInput from '../SuperTextInput';
 
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
 		resizeMode: 'cover',
 		minHeight: '100vh'
 	},
-	addItem: {
+	addExpense: {
 		flex: 1,
 		padding: '10px',
 		margin: '10px',
@@ -31,28 +31,48 @@ class EnterExpense extends Component {
 		this.state = {
 			description: '',
 			cost: '',
-			submittedItems: [],
+			submittedExpenses: [{name: '1'}],
 			count: 0
 		}
 
 		this.handleChange = this.handleChange.bind(this);
-		this.addItem = this.addItem.bind(this);
+		this.addExpense = this.addExpense.bind(this);
 	}
 
-	addItem = () => {
-		var newItems = this.state.submittedItems;
+	componentWillMount() {
+		fetch('http://localhost:9000/expenses').then((res) => {
+      res.json().then((json) => {
+        var newExpenseList = json;
+        this.setState({expenseList: newExpenseList});
+      });
+    });
+	}
 
-		newItems.push({
-			id: this.state.count,
+	addExpense = () => {
+		var newExpenses = this.state.submittedExpenses || [];
+		console.log(newExpenses);
+		var newExpense = {
 			description: this.state.description,
 			cost: this.state.cost
+		};
+
+		newExpenses.push(newExpense);
+
+		console.log('POST new expense');
+		fetch('http://localhost:9000/expenses', {  
+		  method: 'POST',
+		  headers: {
+		    'Content-Type': 'application/json'
+		  },
+		  body: JSON.stringify(newExpense)
+		}, (res) => {
+			console.log(res);
 		});
 
 		this.setState({
 			description: '',
 			cost: '',
-			submittedItems: newItems,
-			count: this.state.count+1
+			submittedExpenses: newExpenses
 		});
 	};
 
@@ -82,7 +102,7 @@ class EnterExpense extends Component {
 			    	keyboardType='numeric'
 		        onChange={this.handleChange}
 		        value={this.state.cost} />
-					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0} onPress={this.addItem} title='Add Item' />
+					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0} onPress={this.addExpense} title='Add Expense' />
 				</View>
 			</Image>
 		);
@@ -91,6 +111,4 @@ class EnterExpense extends Component {
 
 module.exports = EnterExpense;
 
-// {this.state.submittedItems.map((item) => {
-// 					return (<div style={{flex:1}} key={item.id}>{item.description} : {item.cost}<br/></div>);
-// 				})}
+// 

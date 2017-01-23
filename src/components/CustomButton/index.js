@@ -1,6 +1,26 @@
 import React, { Component, PropTypes } from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native-web';
 
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#2196F3',
+    borderRadius: 2,
+    margin: 30
+  },
+  text: {
+    textAlign: 'center',
+    color: '#fff',
+    padding: 8,
+    fontWeight: '500'
+  },
+  buttonDisabled: {
+    backgroundColor: '#dfdfdf'
+  },
+  textDisabled: {
+    color: '#a1a1a1'
+  }
+});
+
 class CustomButton extends Component {
   static propTypes = {
     accessibilityLabel: PropTypes.string,
@@ -39,25 +59,5 @@ class CustomButton extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#2196F3',
-    borderRadius: 2,
-    margin: 30
-  },
-  text: {
-    textAlign: 'center',
-    color: '#fff',
-    padding: 8,
-    fontWeight: '500'
-  },
-  buttonDisabled: {
-    backgroundColor: '#dfdfdf'
-  },
-  textDisabled: {
-    color: '#a1a1a1'
-  }
-});
 
 module.exports = CustomButton;

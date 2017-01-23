@@ -19,7 +19,7 @@ app.post('/expenses', (req, res) => {
 
 app.get('/expenses', (req, res) => {
   db.collection('expense').find().toArray(function(err, results) {
-    res.send(results);
+    res.json(results);
   }); 
 });
 
