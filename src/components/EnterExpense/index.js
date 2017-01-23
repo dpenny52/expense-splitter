@@ -1,5 +1,29 @@
 import React, { Component } from 'react';
-import { Text, Button, TextInput } from 'react-native-web';
+import { StyleSheet, Text, Image, View } from 'react-native-web';
+import CustomButton from '../CustomButton';
+import SuperTextInput from '../SuperTextInput';
+
+const styles = StyleSheet.create({
+	imageBackground: {
+		width: null,
+		// height: null,
+		backgroundColor: 'transparent',
+		justifyContent: 'center',
+		alignItems: 'center',
+		resizeMode: 'cover',
+		minHeight: '100vh'
+	},
+	addItem: {
+		flex: 1,
+		padding: '10px',
+		margin: '10px',
+		borderRadius: '4px',
+		color: 'green'
+	},
+	formBackground: {
+		backgroundColor: 'rgba(255, 255, 255, 0.4)'
+	}
+});
 
 class EnterExpense extends Component {
 	constructor(props) {
@@ -10,7 +34,6 @@ class EnterExpense extends Component {
 			submittedItems: [],
 			count: 0
 		}
-		console.log(this.state);
 
 		this.handleChange = this.handleChange.bind(this);
 		this.addItem = this.addItem.bind(this);
@@ -39,29 +62,35 @@ class EnterExpense extends Component {
 		this.setState(newState);
 	};
 
+	componentDidMount() {
+		// document.body.style.display = 'flex';
+		// document.body.style.flex = 1;
+	}
+
 	render() {
 		return (
-			<div>
-				<Text>Description </Text><br/>
-				<TextInput
-					id='description'
-	        style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-	        onChange={this.handleChange}
-	        value={this.state.description} /><br/>
-		    <Text>Cost </Text><br/>
-		    <TextInput
-		    	id='cost'
-		    	keyboardType = 'numeric'
-		    	style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-	        onChange={this.handleChange}
-	        value={this.state.cost} /><br/>
-				<Button onPress={this.addItem} title="Add Item" style={{color: 'blue'}} />
-				{this.state.submittedItems.map((item) => {
-					return (<div key={item.id}>{item.description} : {item.cost}<br/></div>);
-				})}
-			</div>
+			<Image source={require('../../images/main-background.jpg')} style={styles.imageBackground}>
+				<View style={styles.formBackground}>
+					<SuperTextInput
+						id='description'
+						label='Description'
+		        onChange={this.handleChange}
+		        value={this.state.description} />
+			    <SuperTextInput
+			    	id='cost'
+			    	label='Cost'
+			    	keyboardType='numeric'
+		        onChange={this.handleChange}
+		        value={this.state.cost} />
+					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0} onPress={this.addItem} title='Add Item' />
+				</View>
+			</Image>
 		);
 	}
 }
 
 module.exports = EnterExpense;
+
+// {this.state.submittedItems.map((item) => {
+// 					return (<div style={{flex:1}} key={item.id}>{item.description} : {item.cost}<br/></div>);
+// 				})}
