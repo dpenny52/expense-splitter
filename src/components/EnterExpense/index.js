@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet, Image, View } from 'react-native-web';
 import CustomButton from '../CustomButton';
 import SuperTextInput from '../SuperTextInput';
+import Dropdown from 'react-dropdown';
+import './style.css';
+
+const options = ['Doug', 'Linette'];
 
 const styles = StyleSheet.create({
 	imageBackground: {
@@ -37,6 +41,7 @@ class EnterExpense extends Component {
 
 		this.handleChange = this.handleChange.bind(this);
 		this.addExpense = this.addExpense.bind(this);
+		this.handleDropdownChange = this.handleDropdownChange.bind(this);
 	}
 
 	componentWillMount() {
@@ -50,10 +55,10 @@ class EnterExpense extends Component {
 
 	addExpense = () => {
 		var newExpenses = this.state.submittedExpenses || [];
-		console.log(newExpenses);
 		var newExpense = {
 			description: this.state.description,
-			cost: this.state.cost
+			cost: this.state.cost,
+			person: this.state.person
 		};
 
 		newExpenses.push(newExpense);
@@ -72,6 +77,7 @@ class EnterExpense extends Component {
 		this.setState({
 			description: '',
 			cost: '',
+			person: '',
 			submittedExpenses: newExpenses
 		});
 	};
@@ -82,9 +88,8 @@ class EnterExpense extends Component {
 		this.setState(newState);
 	};
 
-	componentDidMount() {
-		// document.body.style.display = 'flex';
-		// document.body.style.flex = 1;
+	handleDropdownChange(event) {
+		this.setState({person: event.value});
 	}
 
 	render() {
@@ -102,6 +107,7 @@ class EnterExpense extends Component {
 			    	keyboardType='numeric'
 		        onChange={this.handleChange}
 		        value={this.state.cost} />
+		      <Dropdown options={options} onChange={this.handleDropdownChange} value={this.state.person} placeholder="Who are you?" />
 					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0} onPress={this.addExpense} title='Add Expense' />
 				</View>
 			</Image>

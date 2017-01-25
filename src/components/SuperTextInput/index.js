@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     borderStyle: 'solid',
-    borderWidth: '1px', 
+    borderWidth: '2px', 
     borderColor: '#707070',
     fontWeight: 'bold',
     boxShadow: '0 0 5px 1px #969696',

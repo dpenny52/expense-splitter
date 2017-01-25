@@ -15,8 +15,7 @@ class ViewExpenses extends Component {
   componentWillMount() {
     fetch('http://localhost:9000/expenses').then((res) => {
       res.json().then((json) => {
-        var newExpenseList = json;
-        this.setState({expenseList: newExpenseList});
+        this.setState({expenseList: json});
       });
       
     });
@@ -31,7 +30,7 @@ class ViewExpenses extends Component {
       <View>
         <Text>View Expenses</Text>
         {this.state.expenseList.map((expense) => {
-          return (<Text key={expense._id}>{expense.description} : {expense.cost}</Text>);
+          return (<Text key={expense._id}>{expense.date} : {expense.person} : {expense.description} : {expense.cost}</Text>);
         })}
       </View>
     );
