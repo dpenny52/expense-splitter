@@ -25,7 +25,15 @@ const styles = StyleSheet.create({
 		color: 'green'
 	},
 	formBackground: {
-		backgroundColor: 'rgba(255, 255, 255, 0.4)'
+		backgroundColor: 'rgba(180, 180, 180, 0.4)',
+	  transitionDuration: '200ms',
+	  transitionProperty: 'all',
+	  transitionTimingFunction: 'ease',
+	  shadowOpacity: 0.5,
+	  shadowColor: '#555555',
+	  shadowOffset: {width: '3px', height: '5px'},
+	  shadowRadius: '10px',
+	  shadowSpread: '5px'
 	}
 });
 
