@@ -3,6 +3,7 @@ import { StyleSheet, Image, View } from 'react-native-web';
 import CustomButton from '../CustomButton';
 import SuperTextInput from '../SuperTextInput';
 import Dropdown from 'react-dropdown';
+import FacebookLogin from 'react-facebook-login';
 import './style.css';
 
 const options = ['Doug', 'Linette'];
@@ -47,9 +48,6 @@ class EnterExpense extends Component {
 			count: 0
 		}
 
-		this.handleChange = this.handleChange.bind(this);
-		this.addExpense = this.addExpense.bind(this);
-		this.handleDropdownChange = this.handleDropdownChange.bind(this);
 	}
 
 	componentWillMount() {
@@ -90,15 +88,19 @@ class EnterExpense extends Component {
 		});
 	};
 
-	handleChange(event) {
+	handleChange = (event) => {
 		var newState = {};
 		newState[event.target.id] = event.target.value;
 		this.setState(newState);
 	};
 
-	handleDropdownChange(event) {
+	handleDropdownChange = (event) => {
 		this.setState({person: event.value});
-	}
+	};
+
+	responseFacebook = (response) => {
+    console.log(response);
+  };
 
 	render() {
 		return (
@@ -115,6 +117,11 @@ class EnterExpense extends Component {
 			    	keyboardType='numeric'
 		        onChange={this.handleChange}
 		        value={this.state.cost} />
+		      <FacebookLogin
+			    appId="394523654233558"
+			    autoLoad={true}
+			    fields="name,email"
+			    callback={this.responseFacebook} />
 		      <Dropdown options={options} onChange={this.handleDropdownChange} value={this.state.person} placeholder="Who are you?" />
 					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0} onPress={this.addExpense} title='Add Expense' />
 				</View>

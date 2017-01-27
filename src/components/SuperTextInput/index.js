@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   textLabel: {
-    color: 'midnightblue',
+    color: '#000',
     margin: '10px',
     fontWeight: 'bold',
     fontSize: '18pt'
