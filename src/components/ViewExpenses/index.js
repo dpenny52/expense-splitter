@@ -9,27 +9,25 @@ class ViewExpenses extends Component {
       expenseList: []
     }
 
-    this.getExpenseRows = this.getExpenseRows.bind(this);
   }
 
   componentWillMount() {
-    fetch('http://localhost:9000/expenses').then((res) => {
-      res.json().then((json) => {
-        this.setState({expenseList: json});
-      });
-      
+    this.getExpenseList().then((list) => {
+      console.log(list);
+      this.setState({expenseList: list});
     });
   }
 
-  getExpenseRows() {
-    
-  }
+  getExpenseList = () => {
+    var res = fetch('http://localhost:9000/expenses');
+    return res.then((res) => {return res.json()});
+  };
 
   render() {
     return (
       <View>
         <Text>View Expenses</Text>
-        {this.state.expenseList.map((expense) => {
+        {this.state.expenseList && this.state.expenseList.map((expense) => {
           return (<Text key={expense._id}>{expense.date} : {expense.person} : {expense.description} : {expense.cost}</Text>);
         })}
       </View>

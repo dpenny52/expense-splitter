@@ -2,16 +2,11 @@ import React, { Component } from 'react';
 import { StyleSheet, Image, View } from 'react-native-web';
 import CustomButton from '../CustomButton';
 import SuperTextInput from '../SuperTextInput';
-import Dropdown from 'react-dropdown';
 import FacebookLogin from 'react-facebook-login';
-import './style.css';
-
-const options = ['Doug', 'Linette'];
 
 const styles = StyleSheet.create({
 	imageBackground: {
 		width: null,
-		// height: null,
 		backgroundColor: 'transparent',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -34,7 +29,8 @@ const styles = StyleSheet.create({
 	  shadowColor: '#555555',
 	  shadowOffset: {width: '3px', height: '5px'},
 	  shadowRadius: '10px',
-	  shadowSpread: '5px'
+	  shadowSpread: '5px',
+	  borderRadius: '5px'
 	}
 });
 
@@ -44,27 +40,31 @@ class EnterExpense extends Component {
 		this.state = {
 			description: '',
 			cost: '',
-			submittedExpenses: [{name: '1'}],
-			count: 0
+			expenseList: [{name: '1'}],
+			count: 0,
+			loggedIn: false,
+			email: ''
 		}
 
 	}
 
 	componentWillMount() {
-		fetch('http://localhost:9000/expenses').then((res) => {
-      res.json().then((json) => {
-        var newExpenseList = json;
-        this.setState({expenseList: newExpenseList});
-      });
+    this.getExpenseList().then((list) => {
+      this.setState({expenseList: list});
     });
-	}
+  }
+
+  getExpenseList = () => {
+    var res = fetch('http://localhost:9000/expenses');
+    return res.then((res) => {return res.json()});
+  };
 
 	addExpense = () => {
-		var newExpenses = this.state.submittedExpenses || [];
+		var newExpenses = this.state.expenseList || [];
 		var newExpense = {
 			description: this.state.description,
 			cost: this.state.cost,
-			person: this.state.person
+			email: this.state.email
 		};
 
 		newExpenses.push(newExpense);
@@ -83,8 +83,7 @@ class EnterExpense extends Component {
 		this.setState({
 			description: '',
 			cost: '',
-			person: '',
-			submittedExpenses: newExpenses
+			expenseList: newExpenses
 		});
 	};
 
@@ -99,10 +98,44 @@ class EnterExpense extends Component {
 	};
 
 	responseFacebook = (response) => {
-    console.log(response);
+		this.setState({
+			loggedIn: true,
+			email: response.email
+		});
   };
 
+  getFacebookLogin = () => {
+  	return this.state.loggedIn ? '' : (
+  		<FacebookLogin
+  				containerStyle={{
+  					display: 'flex'
+  				}}
+		      buttonStyle={{
+						padding: '13px',
+						marginLeft: '20px',
+						marginRight: '20px',
+						marginBottom: '20px',
+						borderRadius: '4px',
+						fontSize: 14,
+						flex: 1,
+						alignItems: 'center'
+					}}
+			    appId="394523654233558"
+			    autoLoad={true}
+			    fields="name,email"
+			    callback={this.responseFacebook} />
+		)
+  };
+
+  getOwnExpenses = () => {
+  	return this.state.expenseList.filter((expense) => {
+  		return expense.email === this.state.email;
+  	});
+  }
+
 	render() {
+		console.log(this.state);
+		console.log(this.getOwnExpenses());
 		return (
 			<Image source={require('../../images/main-background.jpg')} style={styles.imageBackground}>
 				<View style={styles.formBackground}>
@@ -117,13 +150,11 @@ class EnterExpense extends Component {
 			    	keyboardType='numeric'
 		        onChange={this.handleChange}
 		        value={this.state.cost} />
-		      <FacebookLogin
-			    appId="394523654233558"
-			    autoLoad={true}
-			    fields="name,email"
-			    callback={this.responseFacebook} />
-		      <Dropdown options={options} onChange={this.handleDropdownChange} value={this.state.person} placeholder="Who are you?" />
 					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0} onPress={this.addExpense} title='Add Expense' />
+					{this.getFacebookLogin()}
+					{this.getOwnExpenses().map((expense) => {
+	          return (<Text key={expense._id}>{expense.date} : {expense.email} : {expense.description} : {expense.cost}</Text>);
+	        })}
 				</View>
 			</Image>
 		);
