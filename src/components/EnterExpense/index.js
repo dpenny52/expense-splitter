@@ -130,6 +130,8 @@ class EnterExpense extends Component {
   getOwnExpenses = () => {
   	return this.state.expenseList.filter((expense) => {
   		return expense.email === this.state.email;
+  	}).map((expense) =>{
+  		return ( <div key={expense._id} style={{color: 'red'}}>{expense.date} : {expense.email} : {expense.description} : {expense.cost}</div> );
   	});
   }
 
@@ -152,10 +154,8 @@ class EnterExpense extends Component {
 		        value={this.state.cost} />
 					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0} onPress={this.addExpense} title='Add Expense' />
 					{this.getFacebookLogin()}
-					{this.getOwnExpenses().map((expense) => {
-	          return (<Text key={expense._id}>{expense.date} : {expense.email} : {expense.description} : {expense.cost}</Text>);
-	        })}
 				</View>
+				{this.getOwnExpenses()}
 			</Image>
 		);
 	}
