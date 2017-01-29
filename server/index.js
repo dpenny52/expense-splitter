@@ -12,11 +12,10 @@ app.post('/expenses', (req, res) => {
   var body = req.body;
   body.date = new Date();
 
-  db.collection('expense').save(req.body, (err, result) => {
+  db.collection('expense').save(body, (err, result) => {
     if(err) return console.log(err);
-
   });
-  res.send({status: 'ok'});
+  res.json(body);
 });
 
 app.get('/expenses', (req, res) => {

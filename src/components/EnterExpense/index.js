@@ -3,6 +3,8 @@ import { StyleSheet, Image, View } from 'react-native-web';
 import CustomButton from '../CustomButton';
 import SuperTextInput from '../SuperTextInput';
 import FacebookLogin from 'react-facebook-login';
+import numeral from 'numeral';
+import 'whatwg-fetch';
 
 const styles = StyleSheet.create({
 	imageBackground: {
@@ -30,7 +32,8 @@ const styles = StyleSheet.create({
 	  shadowOffset: {width: '3px', height: '5px'},
 	  shadowRadius: '10px',
 	  shadowSpread: '5px',
-	  borderRadius: '5px'
+	  borderRadius: '5px',
+	  margin: '20px'
 	}
 });
 
@@ -49,7 +52,11 @@ class EnterExpense extends Component {
 	}
 
 	componentWillMount() {
-    this.getExpenseList().then((list) => {
+    this.refreshExpenseList();
+  }
+
+  refreshExpenseList = () => {
+  	this.getExpenseList().then((list) => {
       this.setState({expenseList: list});
     });
   }
@@ -67,8 +74,6 @@ class EnterExpense extends Component {
 			email: this.state.email
 		};
 
-		newExpenses.push(newExpense);
-
 		console.log('POST new expense');
 		fetch('http://localhost:9000/expenses', {  
 		  method: 'POST',
@@ -76,14 +81,16 @@ class EnterExpense extends Component {
 		    'Content-Type': 'application/json'
 		  },
 		  body: JSON.stringify(newExpense)
-		}, (res) => {
-			console.log(res);
-		});
-
-		this.setState({
-			description: '',
-			cost: '',
-			expenseList: newExpenses
+		}).then((res) => {
+			return res.json();
+		}).then((data) => {
+			console.log(data);
+			newExpenses.push(data);
+			this.setState({
+				description: '',
+				cost: '',
+				expenseList: newExpenses
+			});
 		});
 	};
 
@@ -131,13 +138,18 @@ class EnterExpense extends Component {
   	return this.state.expenseList.filter((expense) => {
   		return expense.email === this.state.email;
   	}).map((expense) =>{
-  		return ( <div key={expense._id} style={{color: 'red'}}>{expense.date} : {expense.email} : {expense.description} : {expense.cost}</div> );
+  		var dateFormat = new Date(expense.date);
+  		dateFormat = dateFormat.toLocaleDateString("en-US");
+  		var costFormat = '$' + numeral(expense.cost).format('0.00');
+  		return ( 	<div key={expense._id} style={{width: '100%', display: 'table', tableLayout: 'fixed', color: 'black', borderWidth: '1px', borderStyle: 'solid'}}>
+	  							<div style={{display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{dateFormat}</div>
+	  							<div style={{display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{expense.description}</div>
+	  							<div style={{display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{costFormat}</div>
+								</div> );
   	});
   }
 
 	render() {
-		console.log(this.state);
-		console.log(this.getOwnExpenses());
 		return (
 			<Image source={require('../../images/main-background.jpg')} style={styles.imageBackground}>
 				<View style={styles.formBackground}>
@@ -155,7 +167,9 @@ class EnterExpense extends Component {
 					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0} onPress={this.addExpense} title='Add Expense' />
 					{this.getFacebookLogin()}
 				</View>
-				{this.getOwnExpenses()}
+				<View style={[styles.formBackground, {width: '50%', textAlign: 'center'}]}>
+					{this.getOwnExpenses()}
+				</View>
 			</Image>
 		);
 	}
