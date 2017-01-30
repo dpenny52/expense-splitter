@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native-web';
 import CustomButton from '../CustomButton';
 import SuperTextInput from '../SuperTextInput';
 import ExpensesTable from '../ExpensesTable';
-import FacebookLogin from 'react-facebook-login';
+import FacebookLoginLogout from '../FacebookLoginLogout';
 import 'whatwg-fetch';
 
 const styles = StyleSheet.create({
@@ -119,35 +119,6 @@ class EnterExpense extends Component {
   	});
   }
 
-  getFacebookLogin = () => {
-  	return this.state.loggedIn ? (
-  		<CustomButton 
-  			onPress={this.logout} 
-  			title='Log Out'
-  		/>
-  	) : (
-  		<FacebookLogin
-				containerStyle={{
-					display: 'flex'
-				}}
-	      buttonStyle={{
-					padding: '13px',
-					marginLeft: '20px',
-					marginRight: '20px',
-					marginBottom: '20px',
-					borderRadius: '4px',
-					fontSize: 14,
-					flex: 1,
-					alignItems: 'center'
-				}}
-		    appId="394523654233558"
-		    autoLoad={true}
-		    fields="name,email"
-		    callback={this.responseFacebook} 
-		  />
-		)
-  };
-
   getOwnExpenses = () => {
   	return this.state.expenseList.filter((expense) => {
   		return expense.email === this.state.email;
@@ -170,7 +141,7 @@ class EnterExpense extends Component {
 		        onChange={this.handleChange}
 		        value={this.state.cost} />
 					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0 || this.state.email === ''} onPress={this.addExpense} title='Add Expense' />
-					{this.getFacebookLogin()}
+					<FacebookLoginLogout loggedIn={this.state.loggedIn} onLogoutPress={this.logout} responseFacebook={this.responseFacebook} />
 				</View>
 				<ExpensesTable bgStyle={styles.formBackground} expenseList={this.getOwnExpenses()}/>
 			</View>
