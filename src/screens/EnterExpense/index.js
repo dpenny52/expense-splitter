@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native-web';
-import CustomButton from '../CustomButton';
-import SuperTextInput from '../SuperTextInput';
-import ExpensesTable from '../ExpensesTable';
-import FacebookLoginLogout from '../FacebookLoginLogout';
+import CustomButton from '../../components/CustomButton';
+import SuperTextInput from '../../components/SuperTextInput';
+import ExpensesTable from '../../components/ExpensesTable';
+import FacebookLoginLogout from '../../components/FacebookLoginLogout';
 import 'whatwg-fetch';
 
 const styles = StyleSheet.create({

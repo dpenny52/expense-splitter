@@ -2,8 +2,8 @@
 import React from 'react';
 import { Router, Route } from 'react-router';
 
-import EnterExpense from './components/EnterExpense';
-import ViewExpenses from './components/ViewExpenses';
+import EnterExpense from './screens/EnterExpense';
+import ViewExpenses from './screens/ViewExpenses';
 
 const Routes = (props) => (
   <Router {...props}>
