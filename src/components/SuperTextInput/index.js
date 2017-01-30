@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     padding: '10px',
     marginLeft: 20,
     marginRight: 20,
+    marginBottom: 20,
     borderStyle: 'solid',
     borderWidth: '2px', 
     borderColor: '#121212',
@@ -18,6 +19,7 @@ const styles = StyleSheet.create({
     padding: '10px',
     marginLeft: 20,
     marginRight: 20,
+    marginBottom: 20,
     borderStyle: 'solid',
     borderWidth: '2px', 
     borderColor: '#707070',
@@ -29,11 +31,12 @@ const styles = StyleSheet.create({
   },
   textLabel: {
     color: '#000',
-    margin: '10px',
+    marginBottom: '10px',
     fontWeight: 'bold',
     fontSize: '18pt'
   },
   container: {
+    marginTop: '10px',
     display: 'flex',
     alignItems: 'center'
   }

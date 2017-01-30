@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, View } from 'react-native-web';
+import { StyleSheet, View } from 'react-native-web';
 import CustomButton from '../CustomButton';
 import SuperTextInput from '../SuperTextInput';
 import FacebookLogin from 'react-facebook-login';
@@ -7,13 +7,13 @@ import numeral from 'numeral';
 import 'whatwg-fetch';
 
 const styles = StyleSheet.create({
-	imageBackground: {
+	background: {
 		width: null,
-		backgroundColor: 'transparent',
+		backgroundColor: '#5C6C67',
 		justifyContent: 'center',
 		alignItems: 'center',
-		resizeMode: 'cover',
-		minHeight: '100vh'
+		minHeight: '100vh',
+		flexDirection: 'row'
 	},
 	addExpense: {
 		flex: 1,
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
 		color: 'green'
 	},
 	formBackground: {
-		backgroundColor: 'rgba(180, 180, 180, 0.4)',
+		backgroundColor: 'rgba(208, 199, 186, 0.6)',
 	  transitionDuration: '200ms',
 	  transitionProperty: 'all',
 	  transitionTimingFunction: 'ease',
@@ -34,6 +34,9 @@ const styles = StyleSheet.create({
 	  shadowSpread: '5px',
 	  borderRadius: '5px',
 	  margin: '20px'
+	},
+	tableCell: {
+		textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'
 	}
 });
 
@@ -111,26 +114,39 @@ class EnterExpense extends Component {
 		});
   };
 
+  logout = () => {
+  	this.setState({
+  		loggedIn: false,
+  		email: ''
+  	});
+  }
+
   getFacebookLogin = () => {
-  	return this.state.loggedIn ? '' : (
+  	return this.state.loggedIn ? (
+  		<CustomButton 
+  			onPress={this.logout} 
+  			title='Log Out'
+  		/>
+  	) : (
   		<FacebookLogin
-  				containerStyle={{
-  					display: 'flex'
-  				}}
-		      buttonStyle={{
-						padding: '13px',
-						marginLeft: '20px',
-						marginRight: '20px',
-						marginBottom: '20px',
-						borderRadius: '4px',
-						fontSize: 14,
-						flex: 1,
-						alignItems: 'center'
-					}}
-			    appId="394523654233558"
-			    autoLoad={true}
-			    fields="name,email"
-			    callback={this.responseFacebook} />
+				containerStyle={{
+					display: 'flex'
+				}}
+	      buttonStyle={{
+					padding: '13px',
+					marginLeft: '20px',
+					marginRight: '20px',
+					marginBottom: '20px',
+					borderRadius: '4px',
+					fontSize: 14,
+					flex: 1,
+					alignItems: 'center'
+				}}
+		    appId="394523654233558"
+		    autoLoad={true}
+		    fields="name,email"
+		    callback={this.responseFacebook} 
+		  />
 		)
   };
 
@@ -141,17 +157,17 @@ class EnterExpense extends Component {
   		var dateFormat = new Date(expense.date);
   		dateFormat = dateFormat.toLocaleDateString("en-US");
   		var costFormat = '$' + numeral(expense.cost).format('0.00');
-  		return ( 	<div key={expense._id} style={{width: '100%', display: 'table', tableLayout: 'fixed', color: 'black', borderWidth: '1px', borderStyle: 'solid'}}>
-	  							<div style={{display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{dateFormat}</div>
-	  							<div style={{display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{expense.description}</div>
-	  							<div style={{display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{costFormat}</div>
-								</div> );
+  		return ( 	<div key={expense._id} style={{display: 'table-row'}}>
+	  							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{dateFormat}</div>
+	  							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{expense.description}</div>
+	  							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{costFormat}</div>
+								</div> )
   	});
   }
 
 	render() {
 		return (
-			<Image source={require('../../images/main-background.jpg')} style={styles.imageBackground}>
+			<View style={styles.background}>
 				<View style={styles.formBackground}>
 					<SuperTextInput
 						id='description'
@@ -164,13 +180,20 @@ class EnterExpense extends Component {
 			    	keyboardType='numeric'
 		        onChange={this.handleChange}
 		        value={this.state.cost} />
-					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0} onPress={this.addExpense} title='Add Expense' />
+					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0 || this.state.email === ''} onPress={this.addExpense} title='Add Expense' />
 					{this.getFacebookLogin()}
 				</View>
-				<View style={[styles.formBackground, {width: '50%', textAlign: 'center'}]}>
-					{this.getOwnExpenses()}
+				<View style={[styles.formBackground, {width: '50%'}]}>
+					<div style={{width: '100%', display: 'table', tableLayout: 'fixed', color: 'black', borderWidth: '1px', borderStyle: 'solid'}}>
+						<h3 style={{display: 'table-row'}}>
+							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>Date</div>
+							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>Description</div>
+							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>Cost</div>
+						</h3>
+						{this.getOwnExpenses()}
+					</div>
 				</View>
-			</Image>
+			</View>
 		);
 	}
 }

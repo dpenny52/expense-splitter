@@ -3,17 +3,16 @@ import { Text, TouchableOpacity, StyleSheet } from 'react-native-web';
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#2196F3',
-    borderRadius: 2,
+    backgroundColor: '#1A192A',
+    borderRadius: 4,
     marginLeft: 30,
     marginRight: 30,
-    marginTop: 20,
     marginBottom: 20
   },
   text: {
     textAlign: 'center',
     color: '#fff',
-    padding: 8,
+    padding: 13,
     fontWeight: '500'
   },
   buttonDisabled: {
