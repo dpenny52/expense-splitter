@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native-web';
 import CustomButton from '../CustomButton';
 import SuperTextInput from '../SuperTextInput';
+import ExpensesTable from '../ExpensesTable';
 import FacebookLogin from 'react-facebook-login';
-import numeral from 'numeral';
 import 'whatwg-fetch';
 
 const styles = StyleSheet.create({
@@ -77,7 +77,6 @@ class EnterExpense extends Component {
 			email: this.state.email
 		};
 
-		console.log('POST new expense');
 		fetch('http://localhost:9000/expenses', {  
 		  method: 'POST',
 		  headers: {
@@ -87,7 +86,6 @@ class EnterExpense extends Component {
 		}).then((res) => {
 			return res.json();
 		}).then((data) => {
-			console.log(data);
 			newExpenses.push(data);
 			this.setState({
 				description: '',
@@ -153,15 +151,6 @@ class EnterExpense extends Component {
   getOwnExpenses = () => {
   	return this.state.expenseList.filter((expense) => {
   		return expense.email === this.state.email;
-  	}).map((expense) =>{
-  		var dateFormat = new Date(expense.date);
-  		dateFormat = dateFormat.toLocaleDateString("en-US");
-  		var costFormat = '$' + numeral(expense.cost).format('0.00');
-  		return ( 	<div key={expense._id} style={{display: 'table-row'}}>
-	  							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{dateFormat}</div>
-	  							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{expense.description}</div>
-	  							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>{costFormat}</div>
-								</div> )
   	});
   }
 
@@ -183,16 +172,7 @@ class EnterExpense extends Component {
 					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0 || this.state.email === ''} onPress={this.addExpense} title='Add Expense' />
 					{this.getFacebookLogin()}
 				</View>
-				<View style={[styles.formBackground, {width: '50%'}]}>
-					<div style={{width: '100%', display: 'table', tableLayout: 'fixed', color: 'black', borderWidth: '1px', borderStyle: 'solid'}}>
-						<h3 style={{display: 'table-row'}}>
-							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>Date</div>
-							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>Description</div>
-							<div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>Cost</div>
-						</h3>
-						{this.getOwnExpenses()}
-					</div>
-				</View>
+				<ExpensesTable bgStyle={styles.formBackground} expenseList={this.getOwnExpenses()}/>
 			</View>
 		);
 	}
