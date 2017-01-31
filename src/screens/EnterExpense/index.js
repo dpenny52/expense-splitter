@@ -150,7 +150,7 @@ class EnterExpense extends Component {
 				<ExpensesTable bgStyle={styles.formBackground} expenseList={this.getOwnExpenses()}/>
 				<SplitSelector 
 					bgStyle={styles.formBackground} 
-					handleDropdownChange={(event) => {console.log('hi'); this.setState({splitWith: event.value})}}
+					handleDropdownChange={(event) => {this.setState({splitWith: event.value})}}
 					handleChange={this.handleChange}
 					splitWith={this.state.splitWith}
 					splitPercent={this.state.splitPercent}
