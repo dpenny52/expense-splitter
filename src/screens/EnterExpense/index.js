@@ -5,6 +5,7 @@ import SuperTextInput from '../../components/SuperTextInput';
 import ExpensesTable from '../../components/ExpensesTable';
 import SplitSelector from '../../components/SplitSelector';
 import FacebookLoginLogout from '../../components/FacebookLoginLogout';
+import { addExpense } from '../../actions';
 import 'whatwg-fetch';
 
 const styles = StyleSheet.create({
