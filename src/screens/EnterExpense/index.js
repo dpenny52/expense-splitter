@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native-web';
 import CustomButton from '../../components/CustomButton';
 import SuperTextInput from '../../components/SuperTextInput';
 import ExpensesTable from '../../components/ExpensesTable';
+import SplitSelector from '../../components/SplitSelector';
 import FacebookLoginLogout from '../../components/FacebookLoginLogout';
 import 'whatwg-fetch';
 
@@ -49,7 +50,9 @@ class EnterExpense extends Component {
 			expenseList: [{name: '1'}],
 			count: 0,
 			loggedIn: false,
-			email: ''
+			email: '',
+			splitWith: '',
+      splitPercent: '50'
 		}
 
 	}
@@ -144,6 +147,13 @@ class EnterExpense extends Component {
 					<FacebookLoginLogout loggedIn={this.state.loggedIn} onLogoutPress={this.logout} responseFacebook={this.responseFacebook} />
 				</View>
 				<ExpensesTable bgStyle={styles.formBackground} expenseList={this.getOwnExpenses()}/>
+				<SplitSelector 
+					bgStyle={styles.formBackground} 
+					handleDropdownChange={(event) => {console.log('hi'); this.setState({splitWith: event.value})}}
+					handleChange={this.handleChange}
+					splitWith={this.state.splitWith}
+					splitPercent={this.state.splitPercent}
+				/>
 			</View>
 		);
 	}
