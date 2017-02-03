@@ -37,3 +37,17 @@ export const costChange = (cost) => {
     cost: cost
   }
 }
+
+export const splitWithChange = (splitWith) => {
+  return {
+    type: 'SPLIT_WITH_CHANGE',
+    splitWith: splitWith
+  }
+}
+
+export const splitPercentChange = (splitPercent) => {
+  return {
+    type: 'SPLIT_PERCENT_CHANGE',
+    splitPercent: splitPercent
+  }
+}

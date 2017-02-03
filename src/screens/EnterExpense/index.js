@@ -6,7 +6,7 @@ import SuperTextInput from '../../components/SuperTextInput';
 import ExpensesTable from '../../components/ExpensesTable';
 import SplitSelector from '../../components/SplitSelector';
 import FacebookLoginLogout from '../../components/FacebookLoginLogout';
-import { addExpense, login, logout, descriptionChange, costChange } from '../../actions';
+import { addExpense, login, logout, descriptionChange, costChange, splitWithChange, splitPercentChange } from '../../actions';
 import 'whatwg-fetch';
 
 const styles = StyleSheet.create({
@@ -122,8 +122,8 @@ const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPer
 			<ExpensesTable bgStyle={styles.formBackground} expenseList={getOwnExpenses(user, expenseList)}/>
 			<SplitSelector 
 				bgStyle={styles.formBackground} 
-				handleDropdownChange={(event) => {}}
-				handleChange={(event) => {}}
+				handleDropdownChange={(event) => { dispatch(splitWithChange(event.value)) }}
+				handleChange={(event) => { dispatch(splitPercentChange(event.target.value)) }}
 				splitWith={splitWith}
 				splitPercent={splitPercent.toString()}
 			/>
@@ -137,8 +137,8 @@ const mapStateToProps = (state) => {
 		cost: state.expenses.cost || '0',
 		expenseList: state.expenses.expenseList || [],
 		user: state.user,
-		splitWith: state.splitWitn || '',
-		splitPercent: state.splitPercent || 50
+		splitWith: state.split.splitWith || '',
+		splitPercent: state.split.splitPercent || 50
 	}
 }
 
@@ -154,7 +154,7 @@ EnterExpense.propTypes = {
 	loggedIn: PropTypes.bool,
 	email: PropTypes.string,
 	splitWith: PropTypes.string,
-  splitPercent: PropTypes.number
+  splitPercent: PropTypes.string
 }
 
 export default connect(mapStateToProps)(EnterExpense)
