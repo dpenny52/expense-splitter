@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native-web';
 
 const styles = StyleSheet.create({
@@ -23,43 +23,34 @@ const styles = StyleSheet.create({
   }
 });
 
-class CustomButton extends Component {
-  static propTypes = {
-    accessibilityLabel: PropTypes.string,
-    disabled: PropTypes.bool,
-    onPress: PropTypes.func.isRequired,
-    title: PropTypes.string.isRequired
-  };
+const CustomButton = ({disabled, onPress, title, accessibilityLabel, color}) => {
 
-  render() {
-    const {
-      accessibilityLabel,
-      color,
-      disabled,
-      onPress,
-      title
-    } = this.props;
-
-    return (
-      <TouchableOpacity
-        accessibilityLabel={accessibilityLabel}
-        accessibilityRole={'button'}
-        disabled={disabled}
-        onPress={onPress}
-        style={[
-          styles.button,
-          color && { backgroundColor: color },
-          disabled && styles.buttonDisabled
-        ]}>
-        <Text style={[
-          styles.text,
-          disabled && styles.textDisabled
-        ]}>
-          {title}
-        </Text>
-      </TouchableOpacity>
-    );
-  }
+  return (
+    <TouchableOpacity
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole={'button'}
+      disabled={disabled}
+      onPress={onPress}
+      style={[
+        styles.button,
+        color && { backgroundColor: color },
+        disabled && styles.buttonDisabled
+      ]}>
+      <Text style={[
+        styles.text,
+        disabled && styles.textDisabled
+      ]}>
+        {title}
+      </Text>
+    </TouchableOpacity>
+  );
 }
 
-module.exports = CustomButton;
+CustomButton.PropTypes = {
+  accessibilityLabel: PropTypes.string,
+  disabled: PropTypes.bool,
+  onPress: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired
+};
+
+export default CustomButton;

@@ -1,3 +1,9 @@
+const initialState = {
+  expenseList: [],
+  description: '',
+  cost: '0'
+}
+
 const expense = (state = {}, action) => {
   switch(action.type) {
     case 'ADD_EXPENSE':
@@ -11,13 +17,27 @@ const expense = (state = {}, action) => {
   }
 }
 
-const expenses = (state = [], action) => {
+const expenses = (state = initialState, action) => {
   switch(action.type) {
     case 'ADD_EXPENSE':
-      return [
+      return {
+        expenseList: [
+          ...state.expenseList,
+          expense(undefined, action)
+        ],
+        description: '',
+        cost: 0
+      }
+    case 'DESCRIPTION_CHANGE':
+      return {
         ...state,
-        expense(undefined, action)
-      ]
+        description: action.description
+      }
+    case 'COST_CHANGE':
+      return {
+        ...state,
+        cost: action.cost
+      }
     default: return state
   }
 }

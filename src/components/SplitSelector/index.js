@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import { View } from 'react-native-web';
 import Dropdown from 'react-dropdown';
 import SuperTextInput from '../SuperTextInput';
@@ -6,35 +6,26 @@ import './style.css';
 
 const options = ['dpenny52@gmail.com', 'nette.l.derrick@gmail.com'];
 
-class SplitSelector extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      splitWith: props.splitWith || '',
-      splitPercent: props.splitPercent || 50,
-      bgStyle: props.bgStyle || {},
-      handleChange: props.handleChange || {},
-      handleDropdownChange: props.handleDropdownChange || {}
-    }
-  }
+const SplitSelector = ({splitWith, splitPercent, handleChange, handleDropdownChange}) => {
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(nextProps);
-  }
-
-  render() {
-    return (
-      <View style={this.state.bgStyle}>
-        <Dropdown options={options} onChange={this.state.handleDropdownChange} value={this.state.splitWith} placeholder="Split with..." />
-        <SuperTextInput 
-          id='splitPercent'
-          label='Percentage They Pay'
-          keyboardType='numeric'
-          onChange={this.state.handleChange}
-          value={this.state.splitPercent} />
-      </View>
-    );
-  }
+  return (
+    <View>
+      <Dropdown options={options} onChange={handleDropdownChange} value={splitWith} placeholder="Split with..." />
+      <SuperTextInput 
+        id='splitPercent'
+        label='Percentage They Pay'
+        keyboardType='numeric'
+        onChange={handleChange}
+        value={splitPercent} />
+    </View>
+  );
 }
 
-module.exports = SplitSelector;
+SplitSelector.propTypes = {
+  splitWith: PropTypes.string,
+  splitPercent: PropTypes.string,
+  handleChange: PropTypes.func,
+  handleDropdownChange: PropTypes.func
+}
+
+export default SplitSelector;

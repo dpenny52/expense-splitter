@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import { StyleSheet, View, Text, TextInput } from 'react-native-web';
 
 const styles = StyleSheet.create({
@@ -42,40 +42,39 @@ const styles = StyleSheet.create({
   }
 });
 
-class SuperTextInput extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      style: styles.textInput
-    };
+let style = styles.textInput;
 
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-  }
+const onFocus = (event) => {
+  style = styles.textInputFocus;
+}
 
-  onFocus(event) {
-    this.setState({style: styles.textInputFocus});
-  }
+const onBlur = (event) => {
+  style = styles.textInput;
+}
 
-  onBlur(event) {
-    this.setState({style: styles.textInput});
-  }
+const SuperTextInput = ({label, id, keyboardType, value, onChange}) => {
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.textLabel}>{this.props.label}</Text>
-        <TextInput 
-          id={this.props.id}
-          keyboardType={this.props.keyboardType}
-          value={this.props.value}
-          onChange={this.props.onChange}
-          style={this.state.style}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur} />
-      </View>
-    );
-  }
+  return (
+    <View style={styles.container}>
+      <Text style={styles.textLabel}>{label}</Text>
+      <TextInput 
+        id={id}
+        keyboardType={keyboardType}
+        value={value}
+        onChange={onChange}
+        style={style}
+        onFocus={onFocus}
+        onBlur={onBlur} />
+    </View>
+  );
 };
 
-module.exports = SuperTextInput;
+SuperTextInput.propTypes = {
+  label: PropTypes.string,
+  id: PropTypes.string,
+  keyboardType: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func
+}
+
+export default SuperTextInput;

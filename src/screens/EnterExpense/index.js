@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, View } from 'react-native-web';
 import CustomButton from '../../components/CustomButton';
 import SuperTextInput from '../../components/SuperTextInput';
 import ExpensesTable from '../../components/ExpensesTable';
 import SplitSelector from '../../components/SplitSelector';
 import FacebookLoginLogout from '../../components/FacebookLoginLogout';
-import { addExpense } from '../../actions';
+import { addExpense, login, logout, descriptionChange, costChange } from '../../actions';
 import 'whatwg-fetch';
 
 const styles = StyleSheet.create({
@@ -42,124 +43,131 @@ const styles = StyleSheet.create({
 	}
 });
 
-class EnterExpense extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			description: '',
-			cost: '',
-			expenseList: [{name: '1'}],
-			count: 0,
-			loggedIn: false,
-			email: '',
-			splitWith: '',
-      splitPercent: '50'
-		}
+const getExpenseList = () => {
+  var res = fetch('http://localhost:9000/expenses');
+  return res.then((res) => {return res.json()});
+};
 
+const refreshExpenseList = (dispatch) => {
+	getExpenseList().then((list) => {
+		console.log(list);
+    list.map((expense) => {
+    	dispatch(addExpense(expense));
+    })
+  });
+}
+
+const addExpensePress = () => {
+	// var newExpense = {
+	// 	description: description,
+	// 	cost: cost,
+	// 	email: email
+	// };
+	// console.log('hi');
+	// fetch('http://localhost:9000/expenses', {  
+	//   method: 'POST',
+	//   headers: {
+	//     'Content-Type': 'application/json'
+	//   },
+	//   body: JSON.stringify(newExpense)
+	// }).then((res) => {
+	// 	return res.json();
+	// }).then((data) => {
+	// 	console.log(data);
+	// 	dispatch(addExpense(data));
+	// });
+};
+
+const handleChange = (event) => {
+	// var newState = {};
+	// newState[event.target.id] = event.target.value;
+	// this.setState(newState);
+};
+
+// const handleDropdownChange = (event) => {
+// 	this.setState({person: event.value});
+// };
+
+const getOwnExpenses = (user, expenseList) => {
+	return expenseList.filter((expense) => {
+		if(expense.email === undefined && user.email === '') return true;
+		return expense.email === user.email;
+	});
+}
+
+const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPercent, dispatch})  => {
+	if(expenseList.length === 0) {
+		console.log("dispatching");
+		refreshExpenseList(dispatch);
 	}
 
-	componentWillMount() {
-    this.refreshExpenseList();
-  }
-
-  refreshExpenseList = () => {
-  	this.getExpenseList().then((list) => {
-      this.setState({expenseList: list});
-    });
-  }
-
-  getExpenseList = () => {
-    var res = fetch('http://localhost:9000/expenses');
-    return res.then((res) => {return res.json()});
-  };
-
-	addExpense = () => {
-		var newExpenses = this.state.expenseList || [];
-		var newExpense = {
-			description: this.state.description,
-			cost: this.state.cost,
-			email: this.state.email
-		};
-
-		fetch('http://localhost:9000/expenses', {  
-		  method: 'POST',
-		  headers: {
-		    'Content-Type': 'application/json'
-		  },
-		  body: JSON.stringify(newExpense)
-		}).then((res) => {
-			return res.json();
-		}).then((data) => {
-			newExpenses.push(data);
-			this.setState({
-				description: '',
-				cost: '',
-				expenseList: newExpenses
-			});
-		});
-	};
-
-	handleChange = (event) => {
-		var newState = {};
-		newState[event.target.id] = event.target.value;
-		this.setState(newState);
-	};
-
-	handleDropdownChange = (event) => {
-		this.setState({person: event.value});
-	};
-
-	responseFacebook = (response) => {
-		this.setState({
-			loggedIn: true,
-			email: response.email
-		});
-  };
-
-  logout = () => {
-  	this.setState({
-  		loggedIn: false,
-  		email: ''
-  	});
-  }
-
-  getOwnExpenses = () => {
-  	return this.state.expenseList.filter((expense) => {
-  		return expense.email === this.state.email;
-  	});
-  }
-
-	render() {
-		return (
-			<View style={styles.background}>
-				<View style={styles.formBackground}>
-					<SuperTextInput
-						id='description'
-						label='Description'
-		        onChange={this.handleChange}
-		        value={this.state.description} />
-			    <SuperTextInput
-			    	id='cost'
-			    	label='Cost'
-			    	keyboardType='numeric'
-		        onChange={this.handleChange}
-		        value={this.state.cost} />
-					<CustomButton disabled={this.state.description === '' || this.state.cost <= 0 || this.state.email === ''} onPress={this.addExpense} title='Add Expense' />
-					<FacebookLoginLogout loggedIn={this.state.loggedIn} onLogoutPress={this.logout} responseFacebook={this.responseFacebook} />
-				</View>
-				<ExpensesTable bgStyle={styles.formBackground} expenseList={this.getOwnExpenses()}/>
-				<SplitSelector 
-					bgStyle={styles.formBackground} 
-					handleDropdownChange={(event) => {this.setState({splitWith: event.value})}}
-					handleChange={this.handleChange}
-					splitWith={this.state.splitWith}
-					splitPercent={this.state.splitPercent}
+	return (
+		<View style={styles.background}>
+			<View style={styles.formBackground}>
+				<SuperTextInput
+					id='description'
+					label='Description'
+	        onChange={(event) => { dispatch(descriptionChange(event.target.value)) }}
+	        value={description} />
+		    <SuperTextInput
+		    	id='cost'
+		    	label='Cost'
+		    	keyboardType='numeric'
+	        onChange={(event) => { dispatch(costChange(event.target.value)) }}
+	        value={cost} />
+				<CustomButton 
+					disabled={description === '' || cost === '0' || user.email === ''} 
+					onPress={addExpensePress} 
+					title='Add Expense' 
+				/>
+				<FacebookLoginLogout 
+					loggedIn={user.loggedIn} 
+					onLogoutPress={() => { dispatch(logout()) }} 
+					responseFacebook={(response) => { 
+						dispatch(login({
+							loggedIn: true,
+							email: response.email || ''
+						}))
+					}} 
 				/>
 			</View>
-		);
+			<ExpensesTable bgStyle={styles.formBackground} expenseList={getOwnExpenses(user, expenseList)}/>
+			<SplitSelector 
+				bgStyle={styles.formBackground} 
+				handleDropdownChange={(event) => {}}
+				handleChange={handleChange}
+				splitWith={splitWith}
+				splitPercent={splitPercent.toString()}
+			/>
+		</View>
+	);
+}
+
+const mapStateToProps = (state) => {
+	console.log(state);
+	return {
+		description: state.expenses.description || '',
+		cost: state.expenses.cost || '0',
+		expenseList: state.expenses.expenseList || [],
+		user: state.user,
+		splitWith: state.splitWitn || '',
+		splitPercent: state.splitPercent || 50
 	}
 }
 
-module.exports = EnterExpense;
+EnterExpense.propTypes = {
+	description: PropTypes.string,
+	cost: PropTypes.string,
+	expenseList: PropTypes.arrayOf(PropTypes.shape({
+		description: PropTypes.string,
+		cost: PropTypes.string,
+		date: PropTypes.date,
+		email: PropTypes.string
+	})),
+	loggedIn: PropTypes.bool,
+	email: PropTypes.string,
+	splitWith: PropTypes.string,
+  splitPercent: PropTypes.number
+}
 
-// 
+export default connect(mapStateToProps)(EnterExpense)
