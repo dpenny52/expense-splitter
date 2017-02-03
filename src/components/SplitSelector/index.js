@@ -13,7 +13,7 @@ const SplitSelector = ({splitWith, splitPercent, handleChange, handleDropdownCha
       <Dropdown options={options} onChange={handleDropdownChange} value={splitWith} placeholder="Split with..." />
       <SuperTextInput 
         id='splitPercent'
-        label='Percentage They Pay'
+        label='Percentage You Pay'
         keyboardType='numeric'
         onChange={handleChange}
         value={splitPercent} />
