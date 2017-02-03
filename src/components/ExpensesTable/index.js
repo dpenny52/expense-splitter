@@ -18,10 +18,10 @@ const getFormattedExpenses = (expenseList) => {
   }) : '';
 }
 
-const ExpensesTable = ({expenseList}) => {
-
+const ExpensesTable = ({expenseList, email}) => {
   return (
-    <View style={{width: '50%'}}>
+    <View style={{width: '25%', padding: 10}}>
+      {email}
       <div style={{width: '100%', display: 'table', tableLayout: 'fixed', color: 'black', borderWidth: '1px', borderStyle: 'solid'}}>
         <h3 style={{display: 'table-row'}}>
           <div style={{textAlign: 'center', display: 'table-cell', borderWidth: '1px', borderStyle: 'solid'}}>Date</div>
@@ -41,6 +41,7 @@ ExpensesTable.propTypes = {
     date: PropTypes.date,
     email: PropTypes.string
   })),
+  email: PropTypes.string
 }
 
 export default ExpensesTable;

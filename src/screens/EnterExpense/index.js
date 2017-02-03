@@ -51,7 +51,7 @@ const getExpenseList = () => {
 const refreshExpenseList = (dispatch) => {
 	getExpenseList().then((list) => {
     list.map((expense) => {
-    	dispatch(addExpense(expense));
+    	return dispatch(addExpense(expense));
     })
   });
 }
@@ -73,11 +73,25 @@ const addExpensePress = (description, cost, email) => {
 	});
 };
 
-const getOwnExpenses = (user, expenseList) => {
+const getOwnExpenses = (email, expenseList) => {
 	return expenseList.filter((expense) => {
-		if(expense.email === undefined && user.email === '') return true;
-		return expense.email === user.email;
+		if(expense.email === undefined && email === '') return true;
+		return expense.email === email;
 	});
+}
+
+const calculateSplit = (email, splitWith, expenseList) => {
+	var userCosts = 0;
+	var splitCosts = 0;
+	getOwnExpenses(email, expenseList).map((expense) => {
+		userCosts += parseFloat(expense.cost);
+	});
+	getOwnExpenses(splitWith, expenseList).map((expense) => {
+		splitCosts += parseFloat(expense.cost);
+	});
+	return {
+		userPays: (splitCosts - userCosts)/2
+	}
 }
 
 const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPercent, dispatch})  => {
@@ -100,7 +114,7 @@ const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPer
 	        onChange={(event) => { dispatch(costChange(event.target.value)) }}
 	        value={cost} />
 				<CustomButton 
-					disabled={description === '' || cost === '0' || user.email === ''} 
+					disabled={description === '' || cost === '0' || !user.loggedIn} 
 					onPress={() => {
 						addExpensePress(description, cost, user.email).then((data => {
 							dispatch(addExpense(data));
@@ -119,13 +133,15 @@ const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPer
 					}} 
 				/>
 			</View>
-			<ExpensesTable bgStyle={styles.formBackground} expenseList={getOwnExpenses(user, expenseList)}/>
+			<ExpensesTable bgStyle={styles.formBackground} expenseList={getOwnExpenses(user.email, expenseList)} email={user.email}/>
+			<ExpensesTable bgStyle={styles.formBackground} expenseList={getOwnExpenses(splitWith, expenseList)} email={splitWith}/>
 			<SplitSelector 
-				bgStyle={styles.formBackground} 
+				email={user.email}
 				handleDropdownChange={(event) => { dispatch(splitWithChange(event.value)) }}
 				handleChange={(event) => { dispatch(splitPercentChange(event.target.value)) }}
 				splitWith={splitWith}
 				splitPercent={splitPercent.toString()}
+				userPays={calculateSplit(user.email, splitWith, expenseList).userPays}
 			/>
 		</View>
 	);
