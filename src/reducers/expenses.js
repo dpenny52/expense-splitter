@@ -26,7 +26,7 @@ const expenses = (state = initialState, action) => {
           expense(undefined, action)
         ],
         description: '',
-        cost: 0
+        cost: '0'
       }
     case 'DESCRIPTION_CHANGE':
       return {

@@ -80,7 +80,7 @@ const getOwnExpenses = (email, expenseList) => {
 	});
 }
 
-const calculateSplit = (email, splitWith, expenseList) => {
+const calculateSplit = (email, splitWith, splitPercent, expenseList) => {
 	var userCosts = 0;
 	var splitCosts = 0;
 	getOwnExpenses(email, expenseList).map((expense) => {
@@ -89,8 +89,10 @@ const calculateSplit = (email, splitWith, expenseList) => {
 	getOwnExpenses(splitWith, expenseList).map((expense) => {
 		splitCosts += parseFloat(expense.cost);
 	});
+	userCosts = userCosts*parseFloat(splitPercent/100);
+	splitCosts = splitCosts*parseFloat(1 - splitPercent/100);
 	return {
-		userPays: (splitCosts - userCosts)/2
+		userPays: (splitCosts - userCosts)
 	}
 }
 
@@ -141,7 +143,7 @@ const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPer
 				handleChange={(event) => { dispatch(splitPercentChange(event.target.value)) }}
 				splitWith={splitWith}
 				splitPercent={splitPercent.toString()}
-				userPays={calculateSplit(user.email, splitWith, expenseList).userPays}
+				userPays={calculateSplit(user.email, splitWith, splitPercent, expenseList).userPays}
 			/>
 		</View>
 	);
@@ -149,12 +151,12 @@ const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPer
 
 const mapStateToProps = (state) => {
 	return {
-		description: state.expenses.description || '',
-		cost: state.expenses.cost || '0',
-		expenseList: state.expenses.expenseList || [],
+		description: state.expenses.description,
+		cost: state.expenses.cost,
+		expenseList: state.expenses.expenseList,
 		user: state.user,
-		splitWith: state.split.splitWith || '',
-		splitPercent: state.split.splitPercent || 50
+		splitWith: state.split.splitWith ,
+		splitPercent: state.split.splitPercent
 	}
 }
 
