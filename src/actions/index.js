@@ -11,7 +11,7 @@ export const addExpense = (expense) => {
 export const login = (loginInfo) => {
   return {
     type: 'LOGIN',
-    email: 'dpenny52@gmail.com', //loginInfo.email,
+    email: loginInfo.email,
     loggedIn: true
   }
 }

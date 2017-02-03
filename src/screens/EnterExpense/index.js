@@ -50,43 +50,28 @@ const getExpenseList = () => {
 
 const refreshExpenseList = (dispatch) => {
 	getExpenseList().then((list) => {
-		console.log(list);
     list.map((expense) => {
     	dispatch(addExpense(expense));
     })
   });
 }
 
-const addExpensePress = () => {
-	// var newExpense = {
-	// 	description: description,
-	// 	cost: cost,
-	// 	email: email
-	// };
-	// console.log('hi');
-	// fetch('http://localhost:9000/expenses', {  
-	//   method: 'POST',
-	//   headers: {
-	//     'Content-Type': 'application/json'
-	//   },
-	//   body: JSON.stringify(newExpense)
-	// }).then((res) => {
-	// 	return res.json();
-	// }).then((data) => {
-	// 	console.log(data);
-	// 	dispatch(addExpense(data));
-	// });
+const addExpensePress = (description, cost, email) => {
+	var newExpense = {
+		description: description,
+		cost: cost,
+		email: email
+	};
+	return fetch('http://localhost:9000/expenses', {  
+	  method: 'POST',
+	  headers: {
+	    'Content-Type': 'application/json'
+	  },
+	  body: JSON.stringify(newExpense)
+	}).then((res) => {
+		return res.json();
+	});
 };
-
-const handleChange = (event) => {
-	// var newState = {};
-	// newState[event.target.id] = event.target.value;
-	// this.setState(newState);
-};
-
-// const handleDropdownChange = (event) => {
-// 	this.setState({person: event.value});
-// };
 
 const getOwnExpenses = (user, expenseList) => {
 	return expenseList.filter((expense) => {
@@ -97,7 +82,6 @@ const getOwnExpenses = (user, expenseList) => {
 
 const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPercent, dispatch})  => {
 	if(expenseList.length === 0) {
-		console.log("dispatching");
 		refreshExpenseList(dispatch);
 	}
 
@@ -117,7 +101,11 @@ const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPer
 	        value={cost} />
 				<CustomButton 
 					disabled={description === '' || cost === '0' || user.email === ''} 
-					onPress={addExpensePress} 
+					onPress={() => {
+						addExpensePress(description, cost, user.email).then((data => {
+							dispatch(addExpense(data));
+						}))
+					}}
 					title='Add Expense' 
 				/>
 				<FacebookLoginLogout 
@@ -135,7 +123,7 @@ const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPer
 			<SplitSelector 
 				bgStyle={styles.formBackground} 
 				handleDropdownChange={(event) => {}}
-				handleChange={handleChange}
+				handleChange={(event) => {}}
 				splitWith={splitWith}
 				splitPercent={splitPercent.toString()}
 			/>
@@ -144,7 +132,6 @@ const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPer
 }
 
 const mapStateToProps = (state) => {
-	console.log(state);
 	return {
 		description: state.expenses.description || '',
 		cost: state.expenses.cost || '0',
