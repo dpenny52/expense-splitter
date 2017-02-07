@@ -12,7 +12,7 @@ import 'whatwg-fetch';
 const styles = StyleSheet.create({
 	background: {
 		width: null,
-		backgroundColor: '#5C6C67',
+    backgroundImage: 'linear-gradient(315deg, #88FFCC, #008E95)',
 		justifyContent: 'center',
 		alignItems: 'center',
 		minHeight: '100vh',
