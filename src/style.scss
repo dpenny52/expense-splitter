@@ -1,0 +1,12 @@
+.form-background: {
+    background-color: rgba(208, 199, 186, 0.6);
+    transition-duration: 200ms;
+    transition-property: all;
+    transition-timing-function: ease;
+    shadow-opacity: 0.5;
+    box-shadow: 3px 5px #555555;
+    shadow-radius: 10px;
+    shadow-spread: 5px;
+    border-radius: 5px;
+    margin: '20px';
+}

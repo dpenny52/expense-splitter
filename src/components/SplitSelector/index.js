@@ -6,17 +6,22 @@ import './style.css';
 
 const options = ['dpenny52@gmail.com', 'nette.l.derrick@gmail.com'];
 
-const SplitSelector = ({splitWith, splitPercent, handleChange, handleDropdownChange, userPays}) => {
+const SplitSelector = ({splitWith, splitPercent, handleChange, handleDropdownChange, userPays, hidePercent}) => {
+
+  const percentInput = hidePercent ? '' : (
+    <SuperTextInput 
+      id='splitPercent'
+      label='Percentage You Pay'
+      keyboardType='numeric'
+      onChange={handleChange}
+      value={splitPercent} 
+    />
+  );
 
   return (
     <View>
       <Dropdown options={options} onChange={handleDropdownChange} value={splitWith} placeholder="Split with..." />
-      <SuperTextInput 
-        id='splitPercent'
-        label='Percentage You Pay'
-        keyboardType='numeric'
-        onChange={handleChange}
-        value={splitPercent} />
+      {percentInput}
       <Text>{userPays}</Text>
     </View>
   );
@@ -27,7 +32,8 @@ SplitSelector.propTypes = {
   splitPercent: PropTypes.string,
   handleChange: PropTypes.func,
   handleDropdownChange: PropTypes.func,
-  userPays: PropTypes.number
+  userPays: PropTypes.number,
+  hidePercent: PropTypes.bool,
 }
 
 export default SplitSelector;

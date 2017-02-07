@@ -101,52 +101,70 @@ const EnterExpense = ({description, cost, expenseList, user, splitWith, splitPer
 		refreshExpenseList(dispatch);
 	}
 
-	return (
-		<View style={styles.background}>
-			<View style={styles.formBackground}>
-				<SuperTextInput
-					id='description'
-					label='Description'
-	        onChange={(event) => { dispatch(descriptionChange(event.target.value)) }}
-	        value={description} />
-		    <SuperTextInput
-		    	id='cost'
-		    	label='Cost'
-		    	keyboardType='numeric'
-	        onChange={(event) => { dispatch(costChange(event.target.value)) }}
-	        value={cost} />
-				<CustomButton 
-					disabled={description === '' || cost === '0' || !user.loggedIn} 
-					onPress={() => {
-						addExpensePress(description, cost, user.email).then((data => {
-							dispatch(addExpense(data));
-						}))
-					}}
-					title='Add Expense' 
-				/>
-				<FacebookLoginLogout 
-					loggedIn={user.loggedIn} 
-					onLogoutPress={() => { dispatch(logout()) }} 
-					responseFacebook={(response) => { 
-						dispatch(login({
-							loggedIn: true,
-							email: response.email || ''
-						}))
-					}} 
+	if(user.loggedIn) {
+		return (
+			<View style={styles.background}>
+				<View style={styles.formBackground}>
+					<SuperTextInput
+						id='description'
+						label='Description'
+		        onChange={(event) => { dispatch(descriptionChange(event.target.value)) }}
+		        value={description} />
+			    <SuperTextInput
+			    	id='cost'
+			    	label='Cost'
+			    	keyboardType='numeric'
+		        onChange={(event) => { dispatch(costChange(event.target.value)) }}
+		        value={cost} />
+					<CustomButton 
+						disabled={description === '' || cost === '0' || !user.loggedIn} 
+						onPress={() => {
+							addExpensePress(description, cost, user.email).then((data => {
+								dispatch(addExpense(data));
+							}))
+						}}
+						title='Add Expense' 
+					/>
+					<FacebookLoginLogout 
+						loggedIn={user.loggedIn} 
+						onLogoutPress={() => { dispatch(logout()) }} 
+						responseFacebook={(response) => { 
+							dispatch(login({
+								loggedIn: true,
+								email: response.email || ''
+							}))
+						}} 
+					/>
+				</View>
+				<ExpensesTable bgStyle={styles.formBackground} expenseList={getOwnExpenses(user.email, expenseList)} email={user.email}/>
+				<ExpensesTable bgStyle={styles.formBackground} expenseList={getOwnExpenses(splitWith, expenseList)} email={splitWith}/>
+				<SplitSelector 
+					email={user.email}
+					handleDropdownChange={(event) => { dispatch(splitWithChange(event.value)) }}
+					handleChange={(event) => { dispatch(splitPercentChange(event.target.value)) }}
+					splitWith={splitWith}
+					splitPercent={splitPercent.toString()}
+					hidePercent
+					userPays={calculateSplit(user.email, splitWith, splitPercent, expenseList).userPays}
 				/>
 			</View>
-			<ExpensesTable bgStyle={styles.formBackground} expenseList={getOwnExpenses(user.email, expenseList)} email={user.email}/>
-			<ExpensesTable bgStyle={styles.formBackground} expenseList={getOwnExpenses(splitWith, expenseList)} email={splitWith}/>
-			<SplitSelector 
-				email={user.email}
-				handleDropdownChange={(event) => { dispatch(splitWithChange(event.value)) }}
-				handleChange={(event) => { dispatch(splitPercentChange(event.target.value)) }}
-				splitWith={splitWith}
-				splitPercent={splitPercent.toString()}
-				userPays={calculateSplit(user.email, splitWith, splitPercent, expenseList).userPays}
-			/>
-		</View>
-	);
+		);
+	} else {
+		return (
+			<View style={styles.background}>
+					<FacebookLoginLogout 
+						loggedIn={user.loggedIn} 
+						onLogoutPress={() => { dispatch(logout()) }} 
+						responseFacebook={(response) => { 
+							dispatch(login({
+								loggedIn: true,
+								email: response.email || ''
+							}))
+						}} 
+					/>
+			</View>
+		);
+	}
 }
 
 const mapStateToProps = (state) => {
